@@ -23,15 +23,16 @@
 		    width = element.width;
 		    height = element.height;
 						
-			
+			//used for side by side comparison of images
+		    w2 = width / 2;
+		    
 		    // stamp the image on the left of the canvas and set width/height for resizing primarily for Iphone ratio
-		    c.drawImage(im, 0, 0, 600, 800);
+		    c.drawImage(im, 0, 0, w2, height);
 		    
 		    // get all canvas pixel data
 		    imageData = c.getImageData(0, 0, width, height);
 			
-			//used for side by side comparison of images
-		    w2 = width / 2;
+
 		    
 		    //var for getting channel values mins and maxs for histogram stretch
 		    rMin = 255;
@@ -112,9 +113,14 @@
 		    		targetB = newData.data[inpos++];
 		    		targetA = newData.data[inpos++];
 		            // Add counts to our histogram arrays for each color.
+		            
+		            //simple skin check
+		            if (targetR > targetG && targetG > targetB){
+		            
 		            reds.push(targetR);
 		            greens.push(targetG);
 		            blues.push(targetB);
+		            } 
 
 		    	}		    
 		    }
@@ -142,14 +148,15 @@
 			g_/=greens.length;	
 			b_/=blues.length;
 			
-			//calculates teh green blue differential for warm/cool undertone diagnosis
+			//calculates the green-blue differential for warm/cool undertone diagnosis
 			gbDiff = g_-b_;
 			if (gbDiff>=23){uTone = true;} else {uTone = false;}
+			
 			console.log(r_+","+g_+","+b_);
 			
 			//simple skin checker 
 			//if this checkes false then user should retake photo
-			if (r_-g_ > 7 && r_ > g_ && g_ > b_){
+			if (r_-g_ > 5  && r_ > g_ && g_ > b_){
 				console.log("Human!");
 			} else {console.log("You are not human!");}
 			
@@ -178,6 +185,10 @@
 
 </head>
 <body>
-	<canvas id="canvas1" width="1200", height="800"></canvas>
+	<div style="z-index:10">
+		<a href="" style="position:absolute; margin-left:143px; margin-top:223px"><img src="img/target.png"></a>
+		<a href="" style="position:absolute; margin-left:463px; margin-top:223px"><img src="img/target.png"></a>
+	</div>
+	<canvas id="canvas1" width="640", height="480"></canvas>
 </body>
 </html>
